@@ -101,7 +101,7 @@ def tokenize_basic(text):
         elif guess[i].isalpha():
             out.append(guess[i])
         elif guess[i][0] in ['(', '[', '{']:
-            if guess[i][1] in [')', ']', '}']:
+            if guess[i][-1] in [')', ']', '}']:
                 out.extend([guess[i][0], guess[i][1:-1], guess[i][-1]])
             else:
                 out.extend([guess[i][0], guess[i][1:]])
