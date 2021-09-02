@@ -49,6 +49,7 @@ def is_url(w):
         return False
 
 urlstart_pattern = re.compile('''
+("?)|
 (https?://)|            #'http' followed by optional 's', then '://' OR
 (www\.)                 #'www.'
 ''', re.VERBOSE | re.IGNORECASE)
