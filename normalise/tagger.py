@@ -156,10 +156,9 @@ def is_acr(w):
 
 def is_url(w):
     """Return 'True' if start or end of w looks like a url."""
-    if urlstart_pattern.match(w) or urlend_pattern.match(w):
+    if url_pattern.fullmatch(w):
         return True
-    else:
-        return False
+    return False
 
 hyphen_pattern = re.compile('''
 (([\'\.]?                       # optional "'" or "."
@@ -209,6 +208,14 @@ urlend_pattern = re.compile('''
 (co\.uk))               # 'co.uk'
 $                       #end of string
 ''', re.VERBOSE | re.IGNORECASE)
+
+URL_RE_PATTERN = r'(?i)((?:"?[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]"?))'
+
+MAIL_RE_PATTERN = r'(\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b)'
+
+URL_MAIL_RE_PATTERN = URL_RE_PATTERN + '|' + MAIL_RE_PATTERN
+
+url_pattern = re.compile(URL_MAIL_RE_PATTERN, re.VERBOSE | re.IGNORECASE)
 
 hashtag_pattern = re.compile('''
 \#
