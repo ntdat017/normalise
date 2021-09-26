@@ -109,6 +109,13 @@ def tokenize_basic(text):
                 out.extend([guess[i][:-1], guess[i][-1]])
         elif guess[i][-1] in ['!', '?'] and guess[i][:-1].isalpha():
             out.extend([guess[i][:-1], guess[i][-1]])
+        elif guess[i][0] in ['"', "'"]:
+            if guess[i][-1] in ['"', "'"]:
+                out.extend([guess[i][0], guess[i][1:-1], guess[i][-1]])
+            else:
+                out.extend([guess[i][0], guess[i][1:]])
+        elif guess[i][-1] in ['"', "'"]:
+                out.extend([guess[i][:-1], guess[i][-1]])
         elif guess[i][-1] == '.' and guess[i][:-1].isalpha():
             following = guess[i + 1]
             if following.istitle() and following.lower() in wordlist:
