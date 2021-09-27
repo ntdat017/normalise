@@ -18,6 +18,7 @@ from normalise.splitter import split, retagify
 from normalise.data.measurements import meas_dict, meas_dict_pl
 from normalise.data.abbrev_dict import abbrev_dict
 from normalise.data.element_dict import element_dict
+from normalise.detect import ident_NSW
 
 with open('{}/data/wordlist.pickle'.format(mod_path), mode='rb') as file:
     wordlist = pickle.load(file)
@@ -95,7 +96,11 @@ def run_clfALPHA(dic, text, verbose=True, user_abbrevs={}):
         elif nsw in user_abbrevs:
             out.update({ind: (nsw, 'ALPHA', 'EXPN')})
         else:
-            pred_int = int(clf.predict(gen_featuresetsALPHA({ind: (nsw, tag)}, text)))
+            if not ident_NSW(nsw):
+                # in word list
+                pred_int = 3
+            else:
+                pred_int = int(clf.predict(gen_featuresetsALPHA({ind: (nsw, tag)}, text)))
             ntag = int_tag_dict[pred_int]
             out.update({ind: (nsw, tag, ntag)})
     if verbose:
