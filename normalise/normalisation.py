@@ -95,7 +95,7 @@ def list_NSWs(text, verbose=True, variety='BrE', user_abbrevs={}):
 def tokenize_basic(text):
     guess = [d for w in text.split(' ') for d in w.split('\n')]
     out = []
-    for i in range(len(guess) - 1):
+    for i in range(len(guess)):
         if not guess[i]:
             pass
         elif guess[i].isalpha():
@@ -117,15 +117,8 @@ def tokenize_basic(text):
         elif guess[i][-1] in ['"', "'"]:
                 out.extend([guess[i][:-1], guess[i][-1]])
         elif guess[i][-1] == '.' and guess[i][:-1].isalpha():
-            following = guess[i + 1]
-            if following.istitle() and following.lower() in wordlist:
-                if following.lower() in names_lower:
-                    if guess[i][:-1] in wordlist:
-                        out.extend([guess[i][:-1], '.'])
-                    else:
-                        out.append(guess[i])
-                else:
-                    out.extend([guess[i][:-1], '.'])
+            if guess[i][:-1].lower() in wordlist:
+                out.extend([guess[i][:-1], '.'])
             elif guess[i][-1] == '.' and is_digbased(guess[i][:-1]):
                 out.extend([guess[i][:-1], '.'])
             else:
@@ -134,20 +127,6 @@ def tokenize_basic(text):
             out.extend([guess[i][:-1], guess[i][-1]])
         else:
             out.append(guess[i])
-    if not guess[-1]:
-        pass
-    elif guess[-1].isalpha():
-        out.append(guess[-1])
-    elif guess[-1][-1] in ['!', '?'] and guess[-1][:-1].isalpha():
-        out.extend([guess[-1][:-1], guess[-1][-1]])
-    elif guess[-1][-1] == '.' and guess[-1][:-1] in wordlist:
-        out.extend([guess[-1][:-1], '.'])
-    elif guess[-1][-1] == '.' and is_digbased(guess[-1][:-1]):
-        out.extend([guess[-1][:-1], '.'])
-    elif guess[-1].endswith((',', ':', ';')):
-        out.extend([guess[-1][:-1], guess[-1][-1]])
-    else:
-        out.append(guess[-1])
     return out
 
 
