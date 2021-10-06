@@ -35,6 +35,9 @@ with open('{}/data/word_tokenized_lowered.pickle'.format(mod_path), mode='rb') a
 with open('{}/data/clf_ALPHA.pickle'.format(mod_path), mode='rb') as file:
     clf_ALPHA = pickle.load(file)
 
+with open('{}/data/unpronounceable_model.pickle'.format(mod_path), mode='rb') as file:
+    unpronounceable_model = pickle.load(file)
+
 with open('{}/data/names.pickle'.format(mod_path), mode='rb') as file:
     names_lower = pickle.load(file)
 
@@ -96,8 +99,8 @@ def run_clfALPHA(dic, text, verbose=True, user_abbrevs={}):
         elif nsw in user_abbrevs:
             out.update({ind: (nsw, 'ALPHA', 'EXPN')})
         else:
-            if not ident_NSW(nsw):
-                # in word list
+            if unpronounceable_model.predict([nsw])[0] == 'word':
+                # is prounounceable
                 pred_int = 3
             else:
                 pred_int = int(clf.predict(gen_featuresetsALPHA({ind: (nsw, tag)}, text)))
