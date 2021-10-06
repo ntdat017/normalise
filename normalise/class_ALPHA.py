@@ -99,7 +99,10 @@ def run_clfALPHA(dic, text, verbose=True, user_abbrevs={}):
         elif nsw in user_abbrevs:
             out.update({ind: (nsw, 'ALPHA', 'EXPN')})
         else:
-            if unpronounceable_model.predict([nsw])[0] == 'word':
+            n_vowels, n_consonants = classify_letter(nsw)
+            if n_consonants == len(nsw):
+                pred_int = 2
+            elif unpronounceable_model.predict([nsw])[0] == 'word':
                 # is prounounceable
                 pred_int = 3
             else:
@@ -260,3 +263,14 @@ def triple_rep(w):
         if w[i] == w[i + 1] and w[i] == w[i + 2] and w[i].isalpha():
             return True
     return False
+
+
+def classify_letter(string: str):
+    vowels = 0
+    consonants = 0
+    for i in string:
+        if i.casefold() in 'aeiou':
+            vowels += 1
+        elif i.casefold() in 'qwrtypsdfghjklzxcvbnm':
+            consonants += 1
+    return vowels, consonants
