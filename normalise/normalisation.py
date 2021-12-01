@@ -91,42 +91,43 @@ def list_NSWs(text, verbose=True, variety='BrE', user_abbrevs={}):
     expanded_MISC = expand_all(tagged_MISC, text, verbose=verbose, variety=variety, user_abbrevs=user_abbrevs)
     return expanded_ALPHA, expanded_NUMB, expanded_MISC
 
+def parsing_token(guess):
+    if not guess:
+        return []
+    elif guess.isalpha():
+        return [guess]
+    elif guess[0] in ['(', '[', '{']:
+        if guess[-1] in [')', ']', '}']:
+            return [guess[0], *parsing_token(guess[1:-1]), guess[-1]]
+        else:
+            return [guess[0], *parsing_token(guess[1:])]
+    elif guess[-1] in [')', ']', '}']:
+            return [*parsing_token(guess[:-1]), guess[-1]]
+    elif guess[-1] in ['!', '?']:
+        return [*parsing_token(guess[:-1]), guess[-1]]
+    elif guess[0] in ['"', "'"]:
+        if guess[-1] in ['"', "'"]:
+            return [guess[0], *parsing_token(guess[1:-1]), guess[-1]]
+        else:
+            return [guess[0], *parsing_token(guess[1:])]
+    elif guess[-1] in ['"', "'"]:
+            return [*parsing_token(guess[:-1]), guess[-1]]
+    elif guess[-1] == '.' and guess[:-1].isalpha():
+        if guess[:-1].lower() in wordlist:
+            return [*parsing_token(guess[:-1]), '.']
+        elif guess[-1] == '.' and is_digbased(guess[:-1]):
+            return [*parsing_token(guess[:-1]), '.']
+        else:
+            return [guess]
+    elif guess.endswith((',', ':', ';')):
+        return [*parsing_token(guess[:-1]), guess[-1]]
+    return [guess]
 
 def tokenize_basic(text):
     guess = [d for w in text.split(' ') for d in w.split('\n')]
     out = []
     for i in range(len(guess)):
-        if not guess[i]:
-            pass
-        elif guess[i].isalpha():
-            out.append(guess[i])
-        elif guess[i][0] in ['(', '[', '{']:
-            if guess[i][-1] in [')', ']', '}']:
-                out.extend([guess[i][0], guess[i][1:-1], guess[i][-1]])
-            else:
-                out.extend([guess[i][0], guess[i][1:]])
-        elif guess[i][-1] in [')', ']', '}']:
-                out.extend([guess[i][:-1], guess[i][-1]])
-        elif guess[i][-1] in ['!', '?'] and guess[i][:-1].isalpha():
-            out.extend([guess[i][:-1], guess[i][-1]])
-        elif guess[i][0] in ['"', "'"]:
-            if guess[i][-1] in ['"', "'"]:
-                out.extend([guess[i][0], guess[i][1:-1], guess[i][-1]])
-            else:
-                out.extend([guess[i][0], guess[i][1:]])
-        elif guess[i][-1] in ['"', "'"]:
-                out.extend([guess[i][:-1], guess[i][-1]])
-        elif guess[i][-1] == '.' and guess[i][:-1].isalpha():
-            if guess[i][:-1].lower() in wordlist:
-                out.extend([guess[i][:-1], '.'])
-            elif guess[i][-1] == '.' and is_digbased(guess[i][:-1]):
-                out.extend([guess[i][:-1], '.'])
-            else:
-                out.append(guess[i])
-        elif guess[i].endswith((',', ':', ';')):
-            out.extend([guess[i][:-1], guess[i][-1]])
-        else:
-            out.append(guess[i])
+        out.extend(parsing_token(guess[i]))
     return out
 
 
