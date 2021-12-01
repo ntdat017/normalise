@@ -710,8 +710,10 @@ numbers1 = ['00', '01', '02', '03', '04', '05',
 num_words1 = ['zero', 'one', 'two', 'three', 'four', 'five',
               'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve']
 numbers2 = ['13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']
-num_words2 = ['one', 'two', 'three', 'four', 'five',
-              'six', 'seven', 'eight', 'nine', 'ten', 'eleven']
+# num_words2 = ['one', 'two', 'three', 'four', 'five',
+#               'six', 'seven', 'eight', 'nine', 'ten', 'eleven']
+num_words2 = ['thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen',
+              'eighteen', 'nineteen', 'twenty', 'twenty one', 'twenty two', 'twenty three']
 
 
 def expand_NTIME(w):
